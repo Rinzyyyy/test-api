@@ -1,19 +1,30 @@
-const app = express();
-app.use(bodyParser.json());
+var express = require("express");
+// app.use(bodyParser.json());
+var router = express.Router();
 
-let todos = [
-  { id: 1, title: 'Buy milk', completed: false },
-  { id: 2, title: 'Go to gym', completed: true }
+let todoList = [
+  { id: 1, title: "Buy milk", completed: false },
+  { id: 2, title: "Go to gym", completed: true },
 ];
 
 // GET /todos
-app.get('/todos', (req, res) => {
-  res.send(todos);
+router.get("/", (req, res) => {
+  try {
+    return res.json({ data: todoList });
+  } catch (e) {
+    return res.status(500).json({ message: "get data failed" });
+  }
 });
 
 // POST /todos
-app.post('/todos', (req, res) => {
-  const todo = req.body;
-  todos.push(todo);
-  res.send(todo);
+router.patch("/", (req, res) => {
+  try {
+    const todo = req.body;
+    todoList.push(...todo);
+    return res.json({ message: "patch data success" });
+  } catch (e) {
+    return res.status(500).json({ message: "patch data failed" });
+  }
 });
+
+module.exports = router;
