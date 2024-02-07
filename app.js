@@ -4,6 +4,11 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const cors = require("cors");
+const mg = require("mongoose");
+
+mg.connect("mongodb://127.0.0.1:27017/test-api")
+  .then(() => console.log("mg success"))
+  .catch((e) => console.log(e));
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
