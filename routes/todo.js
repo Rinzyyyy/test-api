@@ -6,7 +6,7 @@ const mg = require("mongoose");
 const todoSchema = new mg.Schema({
   title: {
     type: String,
-    required: true,
+    required: [true,"title is required"],
   },
   completed: {
     type: Boolean,
@@ -82,7 +82,7 @@ const TodoList = mg.model("TodoList", todoListSchema);
 
 //  -------- Add -----------
 
-const addTodo = (data) =>
+const AddTodo = (data) =>
   TodoList.updateOne(
     { name: "Shopping" },
     { $push: { todo: data } },
@@ -91,22 +91,11 @@ const addTodo = (data) =>
 
 //  -------- delete ---------
 
-// TodoList.updateOne(
-//   { name: "Shopping" },
-//   { $pull: { "todo.title": "Go to zoo" } }
-// )
-//   .exec()
-//   .then((result) => {
-//     if (result.nModified > 0) {
-//       console.log("Todo deleted successfully");
-//     } else {
-//       console.log("Todo not found or not deleted");
-//     }
-//   })
-//   .catch((error) => {
-//     console.error("Delete failed", error);
-//   });
-
+const DeleteTodo = (data) =>
+  TodoList.updateOne(
+    { name: "Shopping" },
+    { $pull: { todo: { _id: data } } }
+  ).exec();
 //===================== delete data=============================================
 
 // TodoList.deleteOne({ name: "Shopping"})
@@ -129,7 +118,7 @@ router.get("/", async (req, res) => {
 //  ===================== API POST /todo ========================
 router.patch("/", (req, res) => {
   try {
-    addTodo(req.body)
+    AddTodo(req.body)
       .then((m) => {
         console.log("update ok", m);
         return res.json({ message: "update ok" });
@@ -138,12 +127,33 @@ router.patch("/", (req, res) => {
         console.log("update failed", e);
         return res.json({ message: e.message });
       });
-
   } catch (e) {
     return res.status(500).json({ message: "patch data failed" });
   }
 });
 
 //  ===================== API DELETE /todo ========================
+
+router.delete("/", (req, res) => {
+  try {
+    DeleteTodo(req.query.id)
+      .then((result) => {
+        if (result.modifiedCount > 0) {
+          console.log("Todo deleted successfully");
+          return res.json("Todo deleted successfully");
+        } else {
+          console.log("Todo not found or not deleted");
+          return res.json("Todo not found or not deleted");
+        }
+      })
+      .catch((error) => {
+        console.error("Delete failed", error);
+        return res.json(error.message);
+      });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ message: e.message });
+  }
+});
 
 module.exports = router;
