@@ -6,7 +6,7 @@ const mg = require("mongoose");
 const todoSchema = new mg.Schema({
   title: {
     type: String,
-    required: [true,"title is required"],
+    required: [true, "title is required"],
   },
   completed: {
     type: Boolean,
@@ -108,7 +108,6 @@ const DeleteTodo = (data) =>
 router.get("/", async (req, res) => {
   try {
     let todoListData = await TodoList.find().exec();
-    (data) => console.log("find", data);
     return res.json({ data: todoListData });
   } catch (e) {
     return res.status(500).json({ message: "get data failed" });

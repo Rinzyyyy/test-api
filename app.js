@@ -10,10 +10,10 @@ mg.connect(process.env.MONGODB_CONNECTION)
   .then(() => console.log("mg success"))
   .catch((e) => console.log(e));
 
-
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var todoRouter = require("./routes/todo");
+var knowledgeRouter = require("./routes/knowledge");
 
 var app = express();
 
@@ -32,6 +32,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/todo", todoRouter);
+app.use("/knowledge", knowledgeRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
